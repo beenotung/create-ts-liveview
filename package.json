@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "tsc --noEmit",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "create-react-app",

@@ -1,0 +1,41 @@
+{
+  "name": "create-ts-liveview",
+  "version": "1.0.0",
+  "description": "npm init cli script to create ts-liveview project",
+  "main": "./dist/cli.js",
+  "bin": {
+    "create-ts-liveview": "./dist/cli.js"
+  },
+  "scripts": {
+    "test": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "keywords": [
+    "create-react-app",
+    "typescript",
+    "template"
+  ],
+  "author": {
+    "name": "Beeno Tung",
+    "email": "aabbcc1241@yahoo.com.hk",
+    "url": "https://beeno-tung.surge.sh"
+  },
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "npm-init-helper": "^1.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^15.14.1",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.3.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beenotung/create-ts-liveview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/beenotung/create-ts-liveview/issues"
+  },
+  "homepage": "https://github.com/beenotung/create-ts-liveview#readme"
+}

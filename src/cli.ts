@@ -37,7 +37,7 @@ Inside that directory, you can run several commands:
     Build the typescript project into esm javascript in 'dist' folder.
 
   npm start
-    Run the built server in 'dist' folder.
+    Run the built server in 'dist' folder (for production deployment).
 
 Details refer to https://github.com/beenotung/ts-liveview
 

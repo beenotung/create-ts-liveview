@@ -31,10 +31,10 @@ Done.
 Inside that directory, you can run several commands:
 
   npm run dev
-    Starts the development server, with realtime update and live-reload.
+    Start the development server, with realtime update and live-reload.
 
   npm run build
-    Builds the typescript project into esm javascript in 'dist' folder.
+    Build the typescript project into esm javascript in 'dist' folder.
 
   npm start
     Run the built server in 'dist' folder.

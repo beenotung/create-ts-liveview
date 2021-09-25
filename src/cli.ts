@@ -1,15 +1,29 @@
 #!/usr/bin/env node
+import { renameSync, writeFileSync } from 'fs'
 import { cloneTemplate, getDest } from 'npm-init-helper'
+import { basename, join } from 'path'
 
 async function main() {
   let dest = await getDest()
   console.log('Copying ts-liveivew template to:', dest, '...')
-  cloneTemplate({
+  await cloneTemplate({
     gitSrc: 'https://github.com/beenotung/ts-liveview#v2-rc3-jsx-with-context',
     srcDir: '.',
     dest,
     updatePackageJson: true,
   })
+
+  renameSync(join(dest, 'README.md'), join(dest, 'toolkit.md'))
+
+  let projectName = basename(dest)
+  writeFileSync(
+    join(dest, 'README.md'),
+    `
+# ${projectName}
+
+Powered by [ts-liveview](./toolkit.md)
+`.trim() + '\n',
+  )
 
   console.log(
     `

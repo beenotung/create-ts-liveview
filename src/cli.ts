@@ -6,8 +6,9 @@ import { basename, join } from 'path'
 async function main() {
   let dest = await getDest()
   console.log('Copying ts-liveivew template to:', dest, '...')
+  let branch = 'v2'
   await cloneTemplate({
-    gitSrc: 'https://github.com/beenotung/ts-liveview#v2-rc3-jsx-with-context',
+    gitSrc: 'https://github.com/beenotung/ts-liveview#' + branch,
     srcDir: '.',
     dest,
     updatePackageJson: true,

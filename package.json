@@ -23,7 +23,7 @@
   },
   "license": "BSD-2-Clause",
   "dependencies": {
-    "npm-init-helper": "^1.2.2"
+    "npm-init-helper": "^1.2.5"
   },
   "devDependencies": {
     "@types/node": "^15.14.1",

@@ -2,7 +2,7 @@
 
 npm init cli script to create [ts-liveview](https://github.com/beenotung/ts-liveview/tree/v2) project
 
-[![npm Package Version](https://img.shields.io/npm/v/create-ts-liveview.svg?maxAge=3600)](https://www.npmjs.com/package/create-ts-liveview)
+[![npm Package Version](https://img.shields.io/npm/v/create-ts-liveview)](https://www.npmjs.com/package/create-ts-liveview)
 
 ## How this works
 

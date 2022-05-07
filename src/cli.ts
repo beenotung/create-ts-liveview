@@ -1,7 +1,13 @@
 #!/usr/bin/env node
-import { renameSync, writeFileSync } from 'fs'
+import { existsSync, renameSync, unlinkSync, writeFileSync } from 'fs'
 import { cloneTemplate, getDest } from 'npm-init-helper'
 import { basename, join } from 'path'
+
+function rmFile(file: string) {
+  if (existsSync(file)) {
+    unlinkSync(file)
+  }
+}
 
 async function main() {
   let dest = await getDest()
@@ -14,7 +20,10 @@ async function main() {
     updatePackageJson: true,
   })
 
-  renameSync(join(dest, 'README.md'), join(dest, 'toolkit.md'))
+  rmFile(join(dest, 'LICENSE'))
+  rmFile(join(dest, 'CHANGELOG.md'))
+  rmFile(join(dest, 'size.md'))
+  rmFile(join(dest, 'speed.md'))
 
   let projectName = basename(dest)
   writeFileSync(
@@ -22,7 +31,7 @@ async function main() {
     `
 # ${projectName}
 
-Powered by [ts-liveview](./toolkit.md)
+Powered by [ts-liveview](https://github.com/beenotung/ts-liveview/blob/${branch}/README.md)
 `.trim() + '\n',
   )
 

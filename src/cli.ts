@@ -11,8 +11,8 @@ function rmFile(file: string) {
 
 async function main() {
   let dest = await getDest()
-  console.log('Copying ts-liveivew template to:', dest, '...')
-  let branch = 'v2'
+  let branch = 'v3'
+  console.log(`Copying ts-liveivew (${branch}) template to: ${dest} ...`)
   await cloneTemplate({
     gitSrc: 'https://github.com/beenotung/ts-liveview#' + branch,
     srcDir: '.',
@@ -44,28 +44,23 @@ Inside the project directory, you can run several commands:
     Start the development server, with realtime update and live-reload.
 
   npm run build
-    Build the typescript project into esm javascript in 'dist' folder.
+    Build the typescript project into esm javascript in 'build' folder.
 
   npm start
-    Run the built server in 'dist' folder (for production deployment).
+    Run the built server in 'build' folder (for production deployment).
 
 Details refer to https://github.com/beenotung/ts-liveview
 
 
 Get started by typing:
 
-  cd ${dest}
+  cd ${dest}/cd
+  pnpm i --prefer-offline   # you can also install with yarn or npm
+  npm run migrate
+  cd ..
   pnpm i --prefer-offline
-  pnpm dev
+  npm run dev
 
-
-Installation Alternatives:
-
-  pnpm install
-  or
-  yarn install
-  or
-  npm install
 `.trim(),
   )
 }

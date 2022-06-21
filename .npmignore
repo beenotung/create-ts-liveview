@@ -3,3 +3,4 @@ tsconfig.tsbuildinfo
 *.tgz
 pnpm-lock.yaml
 !template/**/*
+src/

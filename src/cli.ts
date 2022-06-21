@@ -38,7 +38,7 @@ Powered by [ts-liveview](https://github.com/beenotung/ts-liveview/blob/${branch}
   console.log(
     `
 Done.
-Inside that directory, you can run several commands:
+Inside the project directory, you can run several commands:
 
   npm run dev
     Start the development server, with realtime update and live-reload.

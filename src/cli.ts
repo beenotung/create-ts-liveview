@@ -54,7 +54,7 @@ Details refer to https://github.com/beenotung/ts-liveview
 
 Get started by typing:
 
-  cd ${dest}/cd
+  cd ${dest}/db
   pnpm i --prefer-offline   # you can also install with yarn or npm
   npm run migrate
   cd ..

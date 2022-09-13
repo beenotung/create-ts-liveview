@@ -12,7 +12,7 @@ function rmFile(file: string) {
 async function main() {
   let dest = await getDest()
   let branch = 'v4'
-  console.log(`Copying ts-liveivew (${branch}) template to: ${dest} ...`)
+  console.log(`Copying ts-liveview (${branch}) template to: ${dest} ...`)
   await cloneTemplate({
     gitSrc: 'https://github.com/beenotung/ts-liveview#' + branch,
     srcDir: '.',

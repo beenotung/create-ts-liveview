@@ -15,10 +15,8 @@ It downloads the template project using degit. Compared with pulling from git di
 ## Usage example
 ```bash
 > npm init ts-liveview my-app
-> cd my-app
-> pnpm install
-> pnpm dev
 ```
+Then follows the "get started" message from above command.
 
 ## License
 This is free and open-source software (FOSS) with

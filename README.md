@@ -1,6 +1,6 @@
 # create-ts-liveview
 
-npm init cli script to create [ts-liveview](https://github.com/beenotung/ts-liveview/tree/v2) project
+npm init cli script to create [ts-liveview](https://github.com/beenotung/ts-liveview/tree/v4) project
 
 [![npm Package Version](https://img.shields.io/npm/v/create-ts-liveview)](https://www.npmjs.com/package/create-ts-liveview)
 

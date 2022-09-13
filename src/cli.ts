@@ -52,7 +52,7 @@ function parseGetStartedMessage(projectName: string, text: string): string {
   }
   return segments
     .map(line => transformLine(line))
-    .filter(line => line)
+    .filter(line => line !== null)
     .join(EOL)
 }
 

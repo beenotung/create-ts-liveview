@@ -4,3 +4,4 @@ tsconfig.tsbuildinfo
 pnpm-lock.yaml
 !template/**/*
 src/
+.dccache

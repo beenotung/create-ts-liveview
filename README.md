@@ -14,9 +14,17 @@ It downloads the template project using degit. Compared with pulling from git di
 
 ## Usage example
 ```bash
+# reuse cached version if available
 > npm init ts-liveview my-app
+# or always run the latest version of cli package
+> npx create-ts-liveview my-app
 ```
 Then follows the "get started" message from above command.
+
+**Remark**:
+Sometimes "npm init X" get stuck on old version of 'create-X' package, you may run "npx create-X" to run the latest version of cli package.
+
+This issue is discussed on https://github.com/npm/cli/issues/2395
 
 ## License
 This is free and open-source software (FOSS) with

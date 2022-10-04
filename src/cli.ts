@@ -89,5 +89,6 @@ To update database schema, see ./db/README.md
 More help message see ./help.txt
 `.trim()
   console.log(message)
+  console.log()
 }
 main().catch(err => console.error(err))

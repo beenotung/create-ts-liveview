@@ -2,7 +2,7 @@
 import { execSync } from 'child_process'
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
 import { cloneTemplate, getDest } from 'npm-init-helper'
-import { EOL } from 'os'
+import { EOL, userInfo } from 'os'
 import { basename, join } from 'path'
 
 let branch = 'v4'
@@ -31,6 +31,17 @@ function setupInitScript(dest: string) {
   writeFileSync(file, text)
 }
 
+function setupConfigFile(dest: string, projectName: string) {
+  let shortName = projectName.replace(/-server$/, '')
+  let file = join(dest, 'scripts', 'config')
+  let text = readFileSync(file).toString()
+  text = text
+    .replace('beenotung/ts-liveview', userInfo().username + '/' + projectName)
+    .replace('liveviews', shortName)
+    .replace('ts-liveview', shortName)
+  writeFileSync(file, text)
+}
+
 function setupHelpMessage(dest: string) {
   let helpMessage = execSync(join('scripts', 'help.js'), {
     cwd: dest,
@@ -54,7 +65,10 @@ async function main() {
     updatePackageJson: true,
   })
 
+  let projectName = basename(dest)
+
   setupInitScript(dest)
+  setupConfigFile(dest, projectName)
   setupHelpMessage(dest)
 
   rmFile(join(dest, 'scripts', 'help.js'))
@@ -62,8 +76,6 @@ async function main() {
   rmFile(join(dest, 'CHANGELOG.md'))
   rmFile(join(dest, 'size.md'))
   rmFile(join(dest, 'speed.md'))
-
-  let projectName = basename(dest)
 
   let readmeFile = join(dest, 'README.md')
   let readmeText = `

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execSync } from 'child_process'
-import { existsSync, unlinkSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
 import { cloneTemplate, getDest } from 'npm-init-helper'
 import { EOL } from 'os'
 import { basename, join } from 'path'
@@ -9,6 +9,34 @@ let branch = 'v4'
 let repoSrc = 'https://github.com/beenotung/ts-liveview'
 let gitSrc = `${repoSrc}#${branch}`
 let readmeUrl = `${repoSrc}/blob/${branch}/README.md`
+
+let hasExecCmd = process.platform === 'win32' ? 'where' : 'command -v'
+
+function hasExec(name: string) {
+  try {
+    execSync(hasExecCmd + ' ' + name)
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
+function setupInitScript(dest: string) {
+  let file = join(dest, 'scripts', 'init.sh')
+  let text = readFileSync(file).toString()
+  text = text.replace(/\ninstall="/g, '\n#install="')
+  let chosen = hasExec('pnpm') ? 'pnpm' : hasExec('yarn') ? 'yarn' : 'npm'
+  console.log('Setting', chosen, 'as installer in', file, '...')
+  text = text.replace('#install="' + chosen, 'install="' + chosen)
+  writeFileSync(file, text)
+}
+
+function setupHelpMessage(dest: string) {
+  let helpMessage = execSync(join('scripts', 'help.js'), {
+    cwd: dest,
+  }).toString()
+  writeFileSync(join(dest, 'help.txt'), helpMessage)
+}
 
 function rmFile(file: string) {
   if (existsSync(file)) {
@@ -26,10 +54,8 @@ async function main() {
     updatePackageJson: true,
   })
 
-  let helpMessage = execSync(join('scripts', 'help.js'), {
-    cwd: dest,
-  }).toString()
-  writeFileSync(join(dest, 'help.txt'), helpMessage)
+  setupInitScript(dest)
+  setupHelpMessage(dest)
 
   rmFile(join(dest, 'scripts', 'help.js'))
   rmFile(join(dest, 'LICENSE'))

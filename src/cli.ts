@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { execSync } from 'child_process'
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
-import { cloneTemplate, getDest } from 'npm-init-helper'
+import { cloneTemplate, getDest,  hasExec } from 'npm-init-helper'
 import { EOL, userInfo } from 'os'
 import { basename, join } from 'path'
 
@@ -10,16 +10,6 @@ let repoSrc = 'https://github.com/beenotung/ts-liveview'
 let gitSrc = `${repoSrc}#${branch}`
 let readmeUrl = `${repoSrc}/blob/${branch}/README.md`
 
-let hasExecCmd = process.platform === 'win32' ? 'where' : 'command -v'
-
-function hasExec(name: string) {
-  try {
-    execSync(hasExecCmd + ' ' + name)
-    return true
-  } catch (error) {
-    return false
-  }
-}
 
 function setupInitScript(dest: string) {
   let file = join(dest, 'scripts', 'init.sh')

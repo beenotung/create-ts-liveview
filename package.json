@@ -12,9 +12,10 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
-    "create-react-app",
-    "typescript",
-    "template"
+    "ts-liveview",
+    "template",
+    "liveview",
+    "typescript"
   ],
   "author": {
     "name": "Beeno Tung",

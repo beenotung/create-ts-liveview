@@ -1,6 +1,6 @@
 {
   "name": "create-ts-liveview",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "description": "npm init cli script to create ts-liveview project",
   "main": "./dist/cli.js",
   "bin": {

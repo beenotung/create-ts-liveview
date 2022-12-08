@@ -1,15 +1,149 @@
 #!/usr/bin/env node
 import { execSync } from 'child_process'
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
-import { cloneTemplate, getDest,  hasExec } from 'npm-init-helper'
+import { cloneTemplate, hasExec } from 'npm-init-helper'
 import { EOL, userInfo } from 'os'
 import { basename, join } from 'path'
+import { createInterface } from 'readline'
+import { version } from '../package.json'
+import https from 'https'
 
-let branch = 'v4'
-let repoSrc = 'https://github.com/beenotung/ts-liveview'
-let gitSrc = `${repoSrc}#${branch}`
-let readmeUrl = `${repoSrc}/blob/${branch}/README.md`
+let repoOrg = 'beenotung'
+let repoName = 'ts-liveview'
+let repo = `${repoOrg}/${repoName}`
 
+let helpMessage = `
+create-ts-liveview@${version}
+
+## Usage
+
+ > npx create-ts-liveview
+ or
+ > npm init ts-liveview
+
+## Options
+
+ --help
+   display this help message
+
+ --branch <branch-name>
+   specify the branch name of template
+
+ --dest <project-directory>
+   specify the destination directory
+
+If the branch or destination are not specified, they will be asked interactively.
+
+## Usage Example
+
+ > npx create-ts-liveview --branch v4 --dest liveview-hn
+ or
+ > npx create-ts-liveview --branch v4 liveview-hn
+ or
+ > npx create-ts-liveview liveview-hn
+ or
+ > npx create-ts-liveview
+`.trim()
+
+async function getParams() {
+  let branch: string = ''
+  let dest: string = ''
+  for (let i = 2; i < process.argv.length; i++) {
+    if (process.argv[i] === '--branch') {
+      i++
+      branch = process.argv[i]
+      continue
+    }
+    if (process.argv[i] === '--dest') {
+      i++
+      dest = process.argv[i]
+      continue
+    }
+    if (process.argv[i] === '--help') {
+      console.log(helpMessage)
+      process.exit(0)
+    }
+    if (!dest) {
+      dest = process.argv[i]
+      continue
+    }
+    console.log({ branch, dest, i, argv: process.argv })
+    console.error('unknown argument:', process.argv[i])
+    process.exit(1)
+  }
+  if (!branch || !dest) {
+    let iface = createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    })
+    function ask(question: string) {
+      return new Promise<string>((resolve, reject) => {
+        iface.question(question, answer => {
+          resolve(answer)
+        })
+      })
+    }
+    if (!branch) {
+      let branches = await getBranches(repo)
+      console.log('Available branches:')
+      for (let branch of branches) {
+        console.log(`- ${branch.name}`)
+      }
+      branch = await ask('template branch: ')
+    }
+    if (!dest) {
+      dest = await ask('project directory: ')
+    }
+    iface.close()
+  }
+  return {
+    branch,
+    dest,
+  }
+}
+
+function httpsGet(url: string) {
+  return new Promise<any>((resolve, reject) => {
+    https.get(
+      url,
+      {
+        headers: {
+          'User-Agent': 'create-ts-liveview',
+          Accept: 'application/json',
+        },
+      },
+      async res => {
+        let text = ''
+        for await (let chunk of res) {
+          text += chunk
+        }
+        let json = JSON.parse(text)
+        resolve(json)
+      },
+    )
+  })
+}
+
+async function getBranches(repo: string) {
+  let branches = await httpsGet(`https://api.github.com/repos/${repo}/branches`)
+  let versions: { name: string; time: number }[] = []
+  for (let {
+    name,
+    commit: { url },
+  } of branches) {
+    if (!name.startsWith('v')) continue
+    if (name < 'v4') continue
+    let {
+      commit: {
+        author: { date },
+      },
+    } = await httpsGet(url)
+    let time = new Date(date).getTime()
+    versions.push({ name, time })
+  }
+  versions.sort((a, b) => a.time - b.time)
+  return versions
+}
 
 function setupInitScript(dest: string) {
   let file = join(dest, 'scripts', 'init.sh')
@@ -46,8 +180,12 @@ function rmFile(file: string) {
 }
 
 async function main() {
-  let dest = await getDest()
-  console.log(`Copying ts-liveview (${branch}) template to: ${dest} ...`)
+  let { branch, dest } = await getParams()
+  let repoSrc = `https://github.com/${repo}`
+  let gitSrc = `${repoSrc}#${branch}`
+  let readmeUrl = `${repoSrc}/blob/${branch}/README.md`
+
+  console.log(`Copying ${repoName} (${branch}) template to: ${dest} ...`)
   await cloneTemplate({
     gitSrc,
     srcDir: '.',
@@ -71,7 +209,7 @@ async function main() {
   let readmeText = `
 # ${projectName}
 
-Powered by [ts-liveview](${readmeUrl})
+Powered by [${repoName}](${readmeUrl})
 
 See [help.txt](help.txt) to get started.
 `.trim()

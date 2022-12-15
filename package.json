@@ -2,13 +2,13 @@
   "name": "create-ts-liveview",
   "version": "1.7.0",
   "description": "npm init cli script to create ts-liveview project",
-  "main": "./dist/cli.js",
+  "main": "./cli.js",
   "bin": {
-    "create-ts-liveview": "./dist/cli.js"
+    "create-ts-liveview": "./cli.js"
   },
   "scripts": {
     "test": "tsc --noEmit",
-    "build": "tsc",
+    "build": "tsc && chmod +x cli.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

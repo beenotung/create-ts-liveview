@@ -4,5 +4,5 @@ node_modules/
 .pnpm-debug.log
 tsconfig.tsbuildinfo
 .env
-dist/
+cli.js
 *.tgz

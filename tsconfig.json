@@ -7,11 +7,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "dist",
     "incremental": true
   },
   "include": [
-    "src"
+    "cli.ts"
   ],
   "exclude": [
     "template"

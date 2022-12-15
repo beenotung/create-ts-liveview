@@ -5,7 +5,7 @@ import { cloneTemplate, hasExec } from 'npm-init-helper'
 import { EOL, userInfo } from 'os'
 import { basename, join } from 'path'
 import { createInterface } from 'readline'
-import { version } from '../package.json'
+import { version } from './package.json'
 import https from 'https'
 
 let repoOrg = 'beenotung'

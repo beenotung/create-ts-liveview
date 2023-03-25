@@ -85,13 +85,19 @@ async function getParams() {
     }
     if (!branch) {
       let branches = await getBranches(repo)
-      console.log('Available branches:')
-      for (let branch of branches) {
-        console.log(`- ${branch.name}`)
+      let n = branches.length
+      while (!branch) {
+        console.log('Available branches:')
+        for (let i = 0; i < branches.length; i++) {
+          let num = i + 1
+          let name = branches[i].name
+          console.log(`${num}. ${name}`)
+        }
+        let num = await ask(`template branch (1-${n}): `)
+        branch = branches[+num - 1]?.name
       }
-      branch = await ask('template branch: ')
     }
-    if (!dest) {
+    while (!dest) {
       dest = await ask('project directory: ')
     }
     iface.close()

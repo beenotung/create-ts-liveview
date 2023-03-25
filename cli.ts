@@ -132,7 +132,7 @@ async function getBranches(repo: string) {
     commit: { url },
   } of branches) {
     if (!name.startsWith('v')) continue
-    if (name < 'v4') continue
+    if (name < 'v5') continue
     let {
       commit: {
         author: { date },

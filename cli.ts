@@ -84,17 +84,36 @@ async function getParams() {
       })
     }
     if (!branch) {
-      let branches = await getBranches(repo)
-      let n = branches.length
-      while (!branch) {
-        console.log('Available branches:')
-        for (let i = 0; i < branches.length; i++) {
-          let num = i + 1
-          let name = branches[i].name
-          console.log(`${num}. ${name}`)
+      let branches: Version[] = await getBranches(repo).catch(() => {
+        console.error('Using fallback branch list')
+        return [
+          { name: 'v5-demo', time: 0, recommended: true },
+          { name: 'v5-minimal-template', time: 0, recommended: true },
+          { name: 'auth-template', time: 0, recommended: false },
+        ]
+      })
+      let lines = ['Recommended branches:']
+      let recommendedNames: string[] = []
+      let otherNames: string[] = []
+      for (let branch of branches) {
+        if (branch.recommended) {
+          recommendedNames.push(branch.name)
+          let num = recommendedNames.length
+          lines.push(`${num}. ${branch.name}`)
+        } else {
+          otherNames.push(branch.name)
         }
-        let num = await ask(`template branch (1-${n}): `)
-        branch = branches[+num - 1]?.name
+      }
+      lines.push(`Other branches: ${otherNames.reverse().join(', ')}`)
+      let message = lines.join(EOL)
+      while (!branch) {
+        console.log(message)
+        let input = await ask(`template branch (num/name): `)
+        input = recommendedNames[+input - 1] || input
+        if (recommendedNames.includes(input) || otherNames.includes(input)) {
+          branch = input
+          console.log('choosen branch:', branch)
+        }
       }
     }
     while (!dest) {
@@ -124,28 +143,48 @@ function httpsGet(url: string) {
           text += chunk
         }
         let json = JSON.parse(text)
-        resolve(json)
+        if (res.statusCode && 200 <= res.statusCode && res.statusCode < 300) {
+          resolve(json)
+          return
+        }
+        console.error('Failed to do HTTPS GET:', {
+          url,
+          statusCode: res.statusCode,
+          statusMessage: res.statusMessage,
+          headers: res.headers,
+          body: json,
+        })
+        reject(json.message || res.statusMessage || 'Failed to do HTTPS GET')
       },
     )
   })
 }
 
+type Version = {
+  name: string
+  time: number
+  recommended: boolean
+}
+
 async function getBranches(repo: string) {
+  console.log('Loading branch list...')
   let branches = await httpsGet(`https://api.github.com/repos/${repo}/branches`)
-  let versions: { name: string; time: number }[] = []
+  let versions: Version[] = []
   for (let {
     name,
     commit: { url },
   } of branches) {
-    if (!name.startsWith('v')) continue
-    if (name < 'v5') continue
     let {
       commit: {
         author: { date },
       },
     } = await httpsGet(url)
     let time = new Date(date).getTime()
-    versions.push({ name, time })
+    versions.push({
+      name,
+      time,
+      recommended: name.startsWith('v') && name >= 'v5',
+    })
   }
   versions.sort((a, b) => a.time - b.time)
   return versions

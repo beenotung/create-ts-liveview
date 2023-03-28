@@ -6,7 +6,6 @@ import { EOL, userInfo } from 'os'
 import { basename, join } from 'path'
 import { createInterface } from 'readline'
 import { version } from './package.json'
-import https from 'https'
 
 let repoOrg = 'beenotung'
 let repoName = 'ts-liveview'
@@ -84,37 +83,26 @@ async function getParams() {
       })
     }
     if (!branch) {
-      let branches: Version[] = await getBranches(repo).catch(() => {
-        console.error('Using fallback branch list')
-        return [
-          { name: 'v5-demo', time: 0, recommended: true },
-          { name: 'v5-minimal-template', time: 0, recommended: true },
-          { name: 'auth-template', time: 0, recommended: false },
-        ]
-      })
-      let lines = ['Recommended branches:']
-      let recommendedNames: string[] = []
-      let otherNames: string[] = []
-      for (let branch of branches) {
-        if (branch.recommended) {
-          recommendedNames.push(branch.name)
-          let num = recommendedNames.length
-          lines.push(`${num}. ${branch.name}`)
-        } else {
-          otherNames.push(branch.name)
-        }
-      }
-      lines.push(`Other branches: ${otherNames.reverse().join(', ')}`)
+      let branches = ['v5-demo', 'v5-minimal-template', 'auth-template']
+      let lines = [
+        'Choose a template branch',
+        '  Recommended template branches:',
+        ...branches.map((name, i) => `    ${i + 1}. ${name}`),
+        '  See more branches on: https://github.com/beenotung/ts-liveview/branches',
+      ]
       let message = lines.join(EOL)
       while (!branch) {
         console.log(message)
         let input = await ask(`template branch (num/name): `)
-        input = recommendedNames[+input - 1] || input
-        if (recommendedNames.includes(input) || otherNames.includes(input)) {
-          branch = input
-          console.log('choosen branch:', branch)
+        input = input.trim()
+        let num = +input
+        if (num) {
+          branch = branches[num - 1]
+          continue
         }
+        branch = input
       }
+      console.log(`chosen template: ${branch}`)
     }
     while (!dest) {
       dest = await ask('project directory: ')
@@ -125,69 +113,6 @@ async function getParams() {
     branch,
     dest,
   }
-}
-
-function httpsGet(url: string) {
-  return new Promise<any>((resolve, reject) => {
-    https.get(
-      url,
-      {
-        headers: {
-          'User-Agent': 'create-ts-liveview',
-          Accept: 'application/json',
-        },
-      },
-      async res => {
-        let text = ''
-        for await (let chunk of res) {
-          text += chunk
-        }
-        let json = JSON.parse(text)
-        if (res.statusCode && 200 <= res.statusCode && res.statusCode < 300) {
-          resolve(json)
-          return
-        }
-        console.error('Failed to do HTTPS GET:', {
-          url,
-          statusCode: res.statusCode,
-          statusMessage: res.statusMessage,
-          headers: res.headers,
-          body: json,
-        })
-        reject(json.message || res.statusMessage || 'Failed to do HTTPS GET')
-      },
-    )
-  })
-}
-
-type Version = {
-  name: string
-  time: number
-  recommended: boolean
-}
-
-async function getBranches(repo: string) {
-  console.log('Loading branch list...')
-  let branches = await httpsGet(`https://api.github.com/repos/${repo}/branches`)
-  let versions: Version[] = []
-  for (let {
-    name,
-    commit: { url },
-  } of branches) {
-    let {
-      commit: {
-        author: { date },
-      },
-    } = await httpsGet(url)
-    let time = new Date(date).getTime()
-    versions.push({
-      name,
-      time,
-      recommended: name.startsWith('v') && name >= 'v5',
-    })
-  }
-  versions.sort((a, b) => a.time - b.time)
-  return versions
 }
 
 function setupInitScript(dest: string) {

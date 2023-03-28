@@ -218,6 +218,24 @@ function setupHelpMessage(dest: string) {
   writeFileSync(join(dest, 'help.txt'), helpMessage)
 }
 
+function setupReadme(input: {
+  dest: string
+  repoSrc: string
+  branch: string
+  projectName: string
+}) {
+  let { dest, repoSrc, branch, projectName } = input
+  let readmeUrl = `${repoSrc}/blob/${branch}/README.md`
+  let readmeFile = join(dest, 'README.md')
+  let readmeText = `# ${projectName}
+
+Powered by [${repoName}](${readmeUrl})
+
+See [help.txt](help.txt) to get started.
+`
+  writeFileSync(readmeFile, readmeText)
+}
+
 function rmFile(file: string) {
   if (existsSync(file)) {
     unlinkSync(file)
@@ -228,7 +246,6 @@ async function main() {
   let { branch, dest } = await getParams()
   let repoSrc = `https://github.com/${repo}`
   let gitSrc = `${repoSrc}#${branch}`
-  let readmeUrl = `${repoSrc}/blob/${branch}/README.md`
 
   console.log(`Copying ${repoName} (${branch}) template to: ${dest} ...`)
   await cloneTemplate({
@@ -243,22 +260,13 @@ async function main() {
   setupInitScript(dest)
   setupConfigFile(dest, projectName)
   setupHelpMessage(dest)
+  setupReadme({ dest, repoSrc, branch, projectName })
 
   rmFile(join(dest, 'scripts', 'help.js'))
   rmFile(join(dest, 'LICENSE'))
   rmFile(join(dest, 'CHANGELOG.md'))
   rmFile(join(dest, 'size.md'))
   rmFile(join(dest, 'speed.md'))
-
-  let readmeFile = join(dest, 'README.md')
-  let readmeText = `
-# ${projectName}
-
-Powered by [${repoName}](${readmeUrl})
-
-See [help.txt](help.txt) to get started.
-`.trim()
-  writeFileSync(readmeFile, readmeText + EOL)
 
   let message = `
 Done.

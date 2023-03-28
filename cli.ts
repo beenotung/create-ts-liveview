@@ -265,7 +265,7 @@ Done.
 
 Get started by typing:
 
-  cd ${projectName}
+  cd ${dest}
   ./scripts/init.sh   # run this script again if you clone the project on another machine
   npm run dev
 

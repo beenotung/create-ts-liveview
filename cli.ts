@@ -200,7 +200,7 @@ Get started by typing:
 
   cd ${dest}
   ./scripts/init.sh   # run this script again if you clone the project on another machine
-  npm run dev
+  npm start
 
 To update database schema, see ./db/README.md
 

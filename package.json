@@ -2,15 +2,6 @@
   "name": "create-ts-liveview",
   "version": "1.8.3",
   "description": "npm init cli script to create ts-liveview project",
-  "main": "./cli.js",
-  "bin": {
-    "create-ts-liveview": "./cli.js"
-  },
-  "scripts": {
-    "test": "tsc --noEmit",
-    "build": "tsc && chmod +x cli.js",
-    "prepublishOnly": "npm run build"
-  },
   "keywords": [
     "ts-liveview",
     "template",
@@ -23,6 +14,23 @@
     "url": "https://beeno-tung.surge.sh"
   },
   "license": "BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beenotung/create-ts-liveview.git"
+  },
+  "homepage": "https://github.com/beenotung/create-ts-liveview#readme",
+  "bugs": {
+    "url": "https://github.com/beenotung/create-ts-liveview/issues"
+  },
+  "main": "./cli.js",
+  "bin": {
+    "create-ts-liveview": "./cli.js"
+  },
+  "scripts": {
+    "test": "tsc --noEmit",
+    "build": "tsc && chmod +x cli.js",
+    "prepublishOnly": "npm run build"
+  },
   "dependencies": {
     "npm-init-helper": "^1.4.0"
   },
@@ -30,13 +38,5 @@
     "@types/node": "^16.18.9",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/beenotung/create-ts-liveview.git"
-  },
-  "bugs": {
-    "url": "https://github.com/beenotung/create-ts-liveview/issues"
-  },
-  "homepage": "https://github.com/beenotung/create-ts-liveview#readme"
+  }
 }

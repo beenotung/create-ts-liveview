@@ -23,9 +23,13 @@
     "url": "https://github.com/beenotung/create-ts-liveview/issues"
   },
   "main": "./cli.js",
+  "types": "./cli.d.ts",
   "bin": {
     "create-ts-liveview": "./cli.js"
   },
+  "files": [
+    "cli.d.ts"
+  ],
   "scripts": {
     "test": "tsc --noEmit",
     "build": "tsc && chmod +x cli.js",

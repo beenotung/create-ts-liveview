@@ -137,7 +137,7 @@ function setupConfigFile(dest: string, projectName: string) {
 }
 
 function setupHelpMessage(dest: string) {
-  let helpMessage = execSync(join('scripts', 'help.js'), {
+  let helpMessage = execSync('node ' + join('scripts', 'help.js'), {
     cwd: dest,
   }).toString()
   writeFileSync(join(dest, 'help.txt'), helpMessage)

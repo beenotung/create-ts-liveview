@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 import { execSync } from 'child_process'
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
-import { cloneTemplate, hasExec } from 'npm-init-helper'
+import { ask, cloneTemplate, hasExec } from 'npm-init-helper'
 import { EOL, userInfo } from 'os'
 import { basename, join } from 'path'
-import { createInterface } from 'readline'
 import { version } from './package.json'
 
 let repoOrg = 'beenotung'
@@ -71,17 +70,6 @@ async function getParams() {
     process.exit(1)
   }
   if (!branch || !dest) {
-    let iface = createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    })
-    function ask(question: string) {
-      return new Promise<string>((resolve, reject) => {
-        iface.question(question, answer => {
-          resolve(answer)
-        })
-      })
-    }
     if (!branch) {
       let branches = ['v5-demo', 'v5-minimal-template', 'v5-auth-template']
       let lines = [
@@ -107,7 +95,6 @@ async function getParams() {
     while (!dest) {
       dest = await ask('project directory: ')
     }
-    iface.close()
   }
   return {
     branch,

@@ -71,7 +71,12 @@ async function getParams() {
   }
   if (!branch || !dest) {
     if (!branch) {
-      let branches = ['v5-demo', 'v5-minimal-template', 'v5-auth-template']
+      let branches = [
+        'v5-demo',
+        'v5-minimal-template',
+        'v5-ionic-template',
+        'v5-auth-template',
+      ]
       let lines = [
         'Choose a template branch',
         '  Recommended template branches:',

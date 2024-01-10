@@ -72,9 +72,10 @@ async function getParams() {
   if (!branch || !dest) {
     if (!branch) {
       let branches = [
-        'v5-demo',
-        'v5-minimal-template',
+        'v5-demo (kitchen sink)',
+        'v5-web-template',
         'v5-ionic-template',
+        'v5-hybrid-template (web + ionic)',
         'v5-auth-template',
       ]
       let lines = [
@@ -91,9 +92,10 @@ async function getParams() {
         let num = +input
         if (num) {
           branch = branches[num - 1]
-          continue
+        } else {
+          branch = input
         }
-        branch = input
+        branch = branch?.split(' ')[0]
       }
       console.log(`chosen template: ${branch}`)
     }

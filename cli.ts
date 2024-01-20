@@ -76,7 +76,9 @@ async function getParams() {
         'v5-web-template',
         'v5-ionic-template',
         'v5-hybrid-template (web + ionic)',
-        'v5-auth-template',
+        'v5-auth-template (hybrid + authentication)',
+        'v5-auth-web-template',
+        'v5-auth-ionic-template',
       ]
       let lines = [
         'Choose a template branch',

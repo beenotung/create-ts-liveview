@@ -122,6 +122,7 @@ function setupInitScript(dest: string) {
 }
 
 function setupConfigFile(dest: string, projectName: string) {
+  /* setup scripts/config */
   let shortName = projectName.replace(/-server$/, '')
   let file = join(dest, 'scripts', 'config')
   let text = readFileSync(file).toString()
@@ -131,6 +132,7 @@ function setupConfigFile(dest: string, projectName: string) {
     .replace('ts-liveview', shortName)
   writeFileSync(file, text)
 
+  /* setup server/config.ts */
   let shortSiteName = shortName
     .split('-')
     .map(s => s.slice(0, 1).toLocaleUpperCase())

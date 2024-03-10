@@ -130,6 +130,24 @@ function setupConfigFile(dest: string, projectName: string) {
     .replace('liveviews', shortName)
     .replace('ts-liveview', shortName)
   writeFileSync(file, text)
+
+  let shortSiteName = shortName
+    .split('-')
+    .map(s => s.slice(0, 1).toLocaleUpperCase())
+    .join('')
+  let siteName = shortName
+    .split('-')
+    .map(s => s.slice(0, 1).toLocaleUpperCase() + s.slice(1))
+    .join(' ')
+  file = join(dest, 'server', 'config.ts')
+  text = readFileSync(file).toString()
+  text = text
+    .replace(
+      `short_site_name: 'demo-site'`,
+      `short_site_name: '${shortSiteName}'`,
+    )
+    .replace(`site_name: 'ts-liveview'`, `site_name: '${siteName}'`)
+  writeFileSync(file, text)
 }
 
 function setupHelpMessage(dest: string) {

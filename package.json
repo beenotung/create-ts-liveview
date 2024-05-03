@@ -1,6 +1,6 @@
 {
   "name": "create-ts-liveview",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "npm init cli script to create ts-liveview project",
   "keywords": [
     "ts-liveview",

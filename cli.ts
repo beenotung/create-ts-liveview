@@ -188,6 +188,7 @@ async function main() {
   rmFile(join(dest, 'scripts', 'reset-template.sh'))
   rmFile(join(dest, 'LICENSE'))
   rmFile(join(dest, 'CHANGELOG.md'))
+  rmFile(join(dest, 'README-zh.md'))
   rmFile(join(dest, 'size.md'))
   rmFile(join(dest, 'speed.md'))
 

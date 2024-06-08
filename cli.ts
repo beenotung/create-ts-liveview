@@ -111,16 +111,6 @@ async function getParams() {
   }
 }
 
-function setupInitScript(dest: string) {
-  let file = join(dest, 'scripts', 'init.sh')
-  let text = readFileSync(file).toString()
-  text = text.replace(/\ninstall="/g, '\n#install="')
-  let chosen = hasExec('pnpm') ? 'pnpm' : hasExec('yarn') ? 'yarn' : 'npm'
-  console.log('Setting', chosen, 'as installer in', file, '...')
-  text = text.replace('#install="' + chosen, 'install="' + chosen)
-  writeFileSync(file, text)
-}
-
 function setupConfigFile(dest: string, projectName: string) {
   /* setup scripts/config */
   let shortName = projectName.replace(/-server$/, '')
@@ -198,7 +188,6 @@ async function main() {
 
   let projectName = basename(dest)
 
-  setupInitScript(dest)
   setupConfigFile(dest, projectName)
   setupHelpMessage(dest)
   setupReadme({ dest, repoSrc, branch, projectName })

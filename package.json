@@ -36,11 +36,11 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "npm-init-helper": "^1.6.2"
+    "npm-init-helper": "^1.6.3"
   },
   "devDependencies": {
-    "@types/node": "^20.10.6",
+    "@types/node": "^20.16.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.5.4"
   }
 }

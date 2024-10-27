@@ -73,8 +73,10 @@ async function getParams() {
     if (!branch) {
       let branches = [
         'v5-demo (kitchen sink)',
-        'v5-web-template',
-        'v5-ionic-template',
+        'v5-minimal-template (single page starter)',
+        'v5-minimal-without-db-template',
+        'v5-web-template (mobile responsive)',
+        'v5-ionic-template (mobile-first)',
         'v5-hybrid-template (web + ionic)',
         'v5-auth-template (hybrid + authentication)',
         'v5-auth-web-template',

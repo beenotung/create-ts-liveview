@@ -196,6 +196,7 @@ async function main() {
 
   rmFile(join(dest, 'scripts', 'help.js'))
   rmFile(join(dest, 'scripts', 'rebase-template.sh'))
+  rmFile(join(dest, 'scripts', 'check-commits.sh'))
   rmFile(join(dest, 'scripts', 'reset-template.sh'))
   rmFile(join(dest, 'LICENSE'))
   rmFile(join(dest, 'CHANGELOG.md'))

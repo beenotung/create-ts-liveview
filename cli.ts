@@ -175,6 +175,15 @@ function rmFile(file: string) {
   }
 }
 
+function hasGitRepo(dest: string) {
+  try {
+    execSync('git status', { cwd: dest, stdio: 'ignore' })
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
 async function main() {
   let { branch, dest } = await getParams()
   let repoSrc = `https://github.com/${repo}`
@@ -203,6 +212,28 @@ async function main() {
   rmFile(join(dest, 'README-zh.md'))
   rmFile(join(dest, 'size.md'))
   rmFile(join(dest, 'speed.md'))
+
+  // git init
+  if (!hasGitRepo(dest)) {
+    let ans = await ask('Do you want to init a git repo? (Y/n): ')
+    if (ans == '') {
+      console.log('default: yes')
+      ans = 'y'
+    }
+    ans = ans.trim().toLowerCase()[0]
+    if (ans == 'y') {
+      execSync('git init', { cwd: dest })
+    }
+  }
+
+  // git commit
+  if (hasGitRepo(dest)) {
+    execSync('git add .', { cwd: dest })
+    execSync(
+      `git commit -m 'init: setup project skeleton with "npm init ts-liveview" using ${branch}'`,
+      { cwd: dest },
+    )
+  }
 
   let message = `
 Done.

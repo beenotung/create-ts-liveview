@@ -30,11 +30,14 @@ create-ts-liveview@${version}
  --dest <project-directory>
    specify the destination directory
 
+ --lang <language>
+   specify guide messages language: en, cn, hk
+
 If the branch or destination are not specified, they will be asked interactively.
 
 ## Usage Example
 
- > npx create-ts-liveview --branch v4 --dest liveview-hn
+ > npx create-ts-liveview --branch v4 --dest liveview-hn --lang hk
  or
  > npx create-ts-liveview --branch v4 liveview-hn
  or
@@ -43,9 +46,38 @@ If the branch or destination are not specified, they will be asked interactively
  > npx create-ts-liveview
 `.trim()
 
+async function askWithOptions(options: {
+  name: string
+  options: string[]
+  pre_lines?: string[]
+  post_lines?: string[]
+}) {
+  let lines = [
+    ...(options.pre_lines || []),
+    ...options.options.map((option, i) => `   ${i + 1}. ${option}`),
+    ...(options.post_lines || []),
+  ]
+  let message = lines.join(EOL)
+  let value = ''
+  while (!value) {
+    console.log(message)
+    let input = await ask(`${options.name} (num/name): `)
+    input = input.trim()
+    let num = +input
+    if (num) {
+      value = options.options[num - 1]
+    } else {
+      value = input
+    }
+    value = value?.split(' ')[0]
+  }
+  return value
+}
+
 async function getParams() {
   let branch: string = ''
   let dest: string = ''
+  let lang: string = ''
   for (let i = 2; i < process.argv.length; i++) {
     if (process.argv[i] === '--branch') {
       i++
@@ -57,6 +89,11 @@ async function getParams() {
       dest = process.argv[i]
       continue
     }
+    if (process.argv[i] === '--lang') {
+      i++
+      lang = process.argv[i]
+      continue
+    }
     if (process.argv[i] === '--help') {
       console.log(helpMessage)
       process.exit(0)
@@ -65,51 +102,60 @@ async function getParams() {
       dest = process.argv[i]
       continue
     }
-    console.log({ branch, dest, i, argv: process.argv })
+    console.log({ branch, dest, lang, i, argv: process.argv })
     console.error('unknown argument:', process.argv[i])
     process.exit(1)
   }
-  if (!branch || !dest) {
-    if (!branch) {
-      let branches = [
-        'v5-demo (kitchen sink)',
-        'v5-minimal-template (single page starter)',
-        'v5-minimal-without-db-template',
-        'v5-web-template (mobile responsive)',
-        'v5-ionic-template (mobile-first)',
-        'v5-hybrid-template (web + ionic)',
-        'v5-auth-template (hybrid + authentication)',
-        'v5-auth-web-template',
-        'v5-auth-ionic-template',
-      ]
-      let lines = [
+  if (!lang) {
+    let languages = [
+      /* short code */
+      'en (English)',
+      'cn (简体中文)',
+      'hk (繁體中文)',
+    ]
+    lang = await askWithOptions({
+      name: 'language',
+      pre_lines: ['Choose a language for guide messages:'],
+      options: languages,
+      post_lines: [
+        '  See all versions on: https://github.com/beenotung/ts-liveview',
+      ],
+    })
+    lang = lang.toLowerCase()
+    console.log(`chosen language: ${lang}`)
+  }
+  if (!branch) {
+    let branches = [
+      'v5-demo (kitchen sink)',
+      'v5-minimal-template (single page starter)',
+      'v5-minimal-without-db-template',
+      'v5-web-template (mobile responsive)',
+      'v5-ionic-template (mobile-first)',
+      'v5-hybrid-template (web + ionic)',
+      'v5-auth-template (hybrid + authentication)',
+      'v5-auth-web-template',
+      'v5-auth-ionic-template',
+    ]
+    branch = await askWithOptions({
+      name: 'template branch',
+      pre_lines: [
         'Choose a template branch',
         '  Recommended template branches:',
-        ...branches.map((name, i) => `    ${i + 1}. ${name}`),
+      ],
+      options: branches,
+      post_lines: [
         '  See more branches on: https://github.com/beenotung/ts-liveview/branches',
-      ]
-      let message = lines.join(EOL)
-      while (!branch) {
-        console.log(message)
-        let input = await ask(`template branch (num/name): `)
-        input = input.trim()
-        let num = +input
-        if (num) {
-          branch = branches[num - 1]
-        } else {
-          branch = input
-        }
-        branch = branch?.split(' ')[0]
-      }
-      console.log(`chosen template: ${branch}`)
-    }
-    while (!dest) {
-      dest = await ask('project directory: ')
-    }
+      ],
+    })
+    console.log(`chosen template: ${branch}`)
+  }
+  while (!dest) {
+    dest = await ask('project directory: ')
   }
   return {
     branch,
     dest,
+    lang,
   }
 }
 
@@ -175,6 +221,29 @@ function rmFile(file: string) {
   }
 }
 
+function setupReadmeLanguage(dest: string, lang: string) {
+  let allFiles = ['README-zh-cn.md', 'README-zh-hk.md']
+  let filesToKeep: string[] = []
+
+  switch (lang) {
+    case 'cn':
+      filesToKeep.push('README-zh-cn.md')
+      break
+    case 'hk':
+      filesToKeep.push('README-zh-hk.md')
+      break
+    default:
+      filesToKeep = []
+      break
+  }
+
+  for (let file of allFiles) {
+    if (!filesToKeep.includes(file)) {
+      rmFile(join(dest, file))
+    }
+  }
+}
+
 function hasGitRepo(dest: string) {
   try {
     execSync('git status', { cwd: dest, stdio: 'ignore' })
@@ -185,7 +254,7 @@ function hasGitRepo(dest: string) {
 }
 
 async function main() {
-  let { branch, dest } = await getParams()
+  let { branch, dest, lang } = await getParams()
   let repoSrc = `https://github.com/${repo}`
   let gitSrc = `${repoSrc}#${branch}`
 
@@ -209,7 +278,7 @@ async function main() {
   rmFile(join(dest, 'scripts', 'reset-template.sh'))
   rmFile(join(dest, 'LICENSE'))
   rmFile(join(dest, 'CHANGELOG.md'))
-  rmFile(join(dest, 'README-zh.md'))
+  setupReadmeLanguage(dest, lang)
   rmFile(join(dest, 'size.md'))
   rmFile(join(dest, 'speed.md'))
 

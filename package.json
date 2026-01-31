@@ -36,7 +36,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "npm-init-helper": "^1.6.3"
+    "npm-init-helper": "^1.6.4"
   },
   "devDependencies": {
     "@types/node": "^20.16.5",

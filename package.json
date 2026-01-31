@@ -25,7 +25,7 @@
   "main": "./cli.js",
   "types": "./cli.d.ts",
   "bin": {
-    "create-ts-liveview": "./cli.js"
+    "create-ts-liveview": "cli.js"
   },
   "files": [
     "cli.d.ts"
